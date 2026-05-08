@@ -1,3 +1,7 @@
+import domain.rover.Rover;
+import domain.rover.model.Direction;
+import domain.rover.model.Position;
+
 import java.util.Scanner;
 
 public class MarsRover {
@@ -13,109 +17,63 @@ public class MarsRover {
         int sizey = reader.nextInt();
 
         System.out.println("Insert horizontal initial rover position:");
-        int roverx = reader.nextInt();
+        int x = reader.nextInt();
 
         System.out.println("Insert vertical initial rover position:");
-        int rovery = reader.nextInt();
+        int y = reader.nextInt();
 
-        System.out.println("Insert initial rover direction:");
-        String roverz = reader.next(); // n = north, e = east, w = west, s = south
+        System.out.println("Insert initial rover direction (n/e/s/w):");
+        String dir = reader.next();
+
+        Rover rover = new Rover(
+                new Position(x, y),
+                parseDirection(dir)
+        );
 
         while (true) {
 
-            System.out.println(
-                    "Insert command (f = forward, b = backward, l = turn left, r = turn right):"
-            );
-
+            System.out.println("Insert command (f,b,l,r):");
             String command = reader.next();
 
-            String result = executeCommand(
-                    roverx,
-                    rovery,
-                    roverz,
-                    command
-            );
+            executeCommand(rover, command);
 
-            String[] values = result.split(",");
-
-            roverx = Integer.parseInt(values[0]);
-            rovery = Integer.parseInt(values[1]);
-            roverz = values[2];
-
-            System.out.println(
-                    String.format(
-                            "Rover is at x:%d y:%d facing:%s",
-                            roverx,
-                            rovery,
-                            roverz
-                    )
-            );
+            System.out.println(rover.report());
         }
     }
 
-    public static String executeCommand(
-            int roverx,
-            int rovery,
-            String roverz,
-            String command
-    ) {
+    // ---------------- EXECUTION LAYER (now domain-based) ----------------
 
-        if (command.equals("f")) {
-            if (roverz.equals("n")) {
-                rovery += 1;
-            }
-            if (roverz.equals("w")) {
-                roverx -= 1;
-            }
-            if (roverz.equals("s")) {
-                rovery -= 1;
-            }
-            if (roverz.equals("e")) {
-                roverx += 1;
-            }
+    public static void executeCommand(Rover rover, String command) {
+
+        switch (command.toLowerCase()) {
+
+            case "f" -> rover.moveForward();
+
+            case "b" -> rover.moveBackward();
+
+            case "l" -> rover.turnLeft();
+
+            case "r" -> rover.turnRight();
+
+            default -> throw new IllegalArgumentException("Invalid command");
         }
-        if (command.equals("b")) {
-            if (roverz.equals("n")) {
-                rovery -= 1;
-            }
-            if (roverz.equals("w")) {
-                roverx += 1;
-            }
-            if (roverz.equals("s")) {
-                rovery += 1;
-            }
-            if (roverz.equals("e")) {
-                roverx -= 1;
-            }
-        }
-        if (command.equals("l")) {
-            if (roverz.equals("n")) {
-                roverz = "w";
-            }
-            if (roverz.equals("w")) {
-                roverz = "s";
-            }
-            if (roverz.equals("s")) {
-                roverz = "e";
-            }
-            if (roverz.equals("e")) {
-                roverz = "n";
-            }
-        }
-        if (command.equals("r")) {
-            if (roverz.equals("n")) {
-                roverz = "e";
-            }
-            if (roverz.equals("e")) {
-                roverz = "s";
-            }
-            if (roverz.equals("s")) {
-                roverz = "w";
-            }
-            if (roverz.equals("w")) {
-                roverz = "n";
-            }
-        }
-        return roverx + "," + rovery + "," + roverz;
+    }
+
+    // ---------------- Direction parser ----------------
+
+    private static Direction parseDirection(String input) {
+
+        return switch (input.toLowerCase()) {
+
+            case "n" -> Direction.NORTH;
+
+            case "e" -> Direction.EAST;
+
+            case "s" -> Direction.SOUTH;
+
+            case "w" -> Direction.WEST;
+
+            default -> throw new IllegalArgumentException("Invalid direction");
+        };
     }
 }
