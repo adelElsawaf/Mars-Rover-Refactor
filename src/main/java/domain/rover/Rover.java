@@ -31,6 +31,10 @@ public class Rover {
         direction = direction.right();
     }
 
+    public void moveTo(Position position) {
+        this.position = position;
+    }
+
     public Position getPosition() {
         return position;
     }

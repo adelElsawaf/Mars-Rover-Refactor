@@ -1,4 +1,5 @@
-import domain.command.CommandFactory;
+import domain.mission.Mission;
+import domain.planet.Mars;
 import domain.rover.Rover;
 import domain.rover.model.Direction;
 import domain.rover.model.Position;
@@ -12,10 +13,10 @@ public class MarsRover {
         Scanner reader = new Scanner(System.in);
 
         System.out.println("Insert horizontal map size:");
-        int sizex = reader.nextInt();
+        int width = reader.nextInt();
 
         System.out.println("Insert vertical map size:");
-        int sizey = reader.nextInt();
+        int height = reader.nextInt();
 
         System.out.println("Insert horizontal initial rover position:");
         int x = reader.nextInt();
@@ -23,12 +24,17 @@ public class MarsRover {
         System.out.println("Insert vertical initial rover position:");
         int y = reader.nextInt();
 
+        if (x < 0 || x >= width || y < 0 || y >= height) {
+            System.out.println("Invalid rover position: (" + x + "," + y + ") is outside the map bounds.");
+            return;
+        }
+
         System.out.println("Insert initial rover direction (n/e/s/w):");
         String dir = reader.next();
 
-        Rover rover = new Rover(
-                new Position(x, y),
-                parseDirection(dir)
+        Mission mission = new Mission(
+                new Rover(new Position(x, y), parseDirection(dir)),
+                new Mars(width, height)
         );
 
         while (true) {
@@ -36,16 +42,10 @@ public class MarsRover {
             System.out.println("Insert command (f,b,l,r):");
             String command = reader.next();
 
-            executeCommand(rover, command);
+            mission.execute(command);
 
-            System.out.println(rover.report());
+            System.out.println(mission.report());
         }
-    }
-
-    // ---------------- EXECUTION LAYER (Command Pattern + Factory) ----------------
-
-    public static void executeCommand(Rover rover, String command) {
-        CommandFactory.create(command).execute(rover);
     }
 
     // ---------------- Direction parser ----------------
