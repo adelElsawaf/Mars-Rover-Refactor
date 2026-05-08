@@ -1,3 +1,4 @@
+import domain.command.CommandFactory;
 import domain.rover.Rover;
 import domain.rover.model.Direction;
 import domain.rover.model.Position;
@@ -41,22 +42,10 @@ public class MarsRover {
         }
     }
 
-    // ---------------- EXECUTION LAYER (now domain-based) ----------------
+    // ---------------- EXECUTION LAYER (Command Pattern + Factory) ----------------
 
     public static void executeCommand(Rover rover, String command) {
-
-        switch (command.toLowerCase()) {
-
-            case "f" -> rover.moveForward();
-
-            case "b" -> rover.moveBackward();
-
-            case "l" -> rover.turnLeft();
-
-            case "r" -> rover.turnRight();
-
-            default -> throw new IllegalArgumentException("Invalid command");
-        }
+        CommandFactory.create(command).execute(rover);
     }
 
     // ---------------- Direction parser ----------------
