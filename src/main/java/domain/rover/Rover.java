@@ -15,12 +15,16 @@ public class Rover {
         this.direction = direction;
     }
 
-    public void moveForward() {
-        move(DEFAULT_STEP_SIZE);
+    public Position getNextForwardPosition() {
+        return positionShiftedBy(DEFAULT_STEP_SIZE);
     }
 
-    public void moveBackward() {
-        move(-DEFAULT_STEP_SIZE);
+    public Position getNextBackwardPosition() {
+        return positionShiftedBy(-DEFAULT_STEP_SIZE);
+    }
+
+    public void moveTo(Position position) {
+        this.position = position;
     }
 
     public void turnLeft() {
@@ -29,10 +33,6 @@ public class Rover {
 
     public void turnRight() {
         direction = direction.right();
-    }
-
-    public void moveTo(Position position) {
-        this.position = position;
     }
 
     public Position getPosition() {
@@ -44,15 +44,11 @@ public class Rover {
     }
 
     public String report() {
-        return position.x()
-                + ","
-                + position.y()
-                + ","
-                + direction.name().toLowerCase();
+        return position.x() + "," + position.y() + "," + direction.name().toLowerCase();
     }
 
-    private void move(int stepSize) {
-        position = position.movedBy(
+    private Position positionShiftedBy(int stepSize) {
+        return position.movedBy(
                 direction.moveX(stepSize),
                 direction.moveY(stepSize)
         );

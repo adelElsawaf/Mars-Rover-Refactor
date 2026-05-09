@@ -1,5 +1,6 @@
-package domain.command;
+package domain.command.rotation;
 
+import domain.command.Command;
 import domain.rover.Rover;
 
 public class TurnLeftCommand implements Command {

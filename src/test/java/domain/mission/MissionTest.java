@@ -7,6 +7,8 @@ import domain.rover.model.Direction;
 import domain.rover.model.Position;
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MissionTest {
@@ -53,6 +55,39 @@ public class MissionTest {
         assertEquals("0,4,south", mission.report());
     }
 
+    // ---------------- BACKWARD MOVEMENT ----------------
+
+    @Test
+    void shouldMoveBackward() {
+
+        Mission mission = missionOn(new Mars(5, 5), 0, 2, Direction.NORTH);
+
+        mission.execute("b");
+
+        assertEquals("0,1,north", mission.report());
+    }
+
+    @Test
+    void shouldWrapWhenRoverMovesBackwardOverEdge() {
+
+        Mission mission = missionOn(new Mars(5, 5), 0, 0, Direction.NORTH);
+
+        mission.execute("b");
+
+        assertEquals("0,4,north", mission.report());
+    }
+
+    @Test
+    void shouldNotMoveBackwardWhenObstacleBehind() {
+
+        Planet mars = new Mars(5, 5, Set.of(new Position(0, 1)));
+        Mission mission = missionOn(mars, 0, 2, Direction.NORTH);
+
+        mission.execute("b");
+
+        assertEquals("0,2,north", mission.report());
+    }
+
     // ---------------- ROTATION ----------------
 
     @Test
@@ -87,6 +122,41 @@ public class MissionTest {
         mission.execute("f");
 
         assertEquals("1,1,east", mission.report());
+    }
+
+    // ---------------- OBSTACLES ----------------
+
+    @Test
+    void shouldNotMoveWhenObstacleAhead() {
+
+        Planet mars = new Mars(5, 5, Set.of(new Position(0, 1)));
+        Mission mission = missionOn(mars, 0, 0, Direction.NORTH);
+
+        mission.execute("f");
+
+        assertEquals("0,0,north", mission.report());
+    }
+
+    @Test
+    void shouldNotMoveWhenObstacleAtWrappedPosition() {
+
+        Planet mars = new Mars(5, 5, Set.of(new Position(0, 0)));
+        Mission mission = missionOn(mars, 0, 4, Direction.NORTH);
+
+        mission.execute("f");
+
+        assertEquals("0,4,north", mission.report());
+    }
+
+    @Test
+    void shouldMoveWhenNoObstacleAhead() {
+
+        Planet mars = new Mars(5, 5, Set.of(new Position(2, 2)));
+        Mission mission = missionOn(mars, 0, 0, Direction.NORTH);
+
+        mission.execute("f");
+
+        assertEquals("0,1,north", mission.report());
     }
 
     // ---------------- HELPER ----------------

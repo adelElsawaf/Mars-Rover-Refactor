@@ -3,7 +3,11 @@ package domain.planet;
 import domain.rover.model.Position;
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MarsTest {
 
@@ -38,5 +42,29 @@ public class MarsTest {
     @Test
     void shouldNotWrapPositionInsideBounds() {
         assertEquals(new Position(2, 3), mars.wrapAround(new Position(2, 3)));
+    }
+
+    // ---------------- OBSTACLE DETECTION ----------------
+
+    @Test
+    void shouldDetectObstacleAtGivenPosition() {
+
+        Mars marsWithObstacle = new Mars(5, 5, Set.of(new Position(2, 3)));
+
+        assertTrue(marsWithObstacle.hasObstacleAt(new Position(2, 3)));
+    }
+
+    @Test
+    void shouldNotBlockFreePosition() {
+
+        Mars marsWithObstacle = new Mars(5, 5, Set.of(new Position(2, 3)));
+
+        assertFalse(marsWithObstacle.hasObstacleAt(new Position(1, 1)));
+    }
+
+    @Test
+    void shouldNotBlockAnyPositionWhenNoObstacles() {
+
+        assertFalse(mars.hasObstacleAt(new Position(2, 3)));
     }
 }

@@ -11,41 +11,41 @@ public class RoverTest {
     // ---------------- FORWARD MOVEMENT ----------------
 
     @Test
-    void shouldMoveForwardNorth() {
+    void shouldMoveForwardWhenFacingNorth() {
 
         Rover rover = new Rover(new Position(0, 0), Direction.NORTH);
 
-        rover.moveForward();
+        rover.moveTo(rover.getNextForwardPosition());
 
         assertEquals("0,1,north", rover.report());
     }
 
     @Test
-    void shouldMoveForwardSouth() {
+    void shouldMoveForwardWhenFacingSouth() {
 
         Rover rover = new Rover(new Position(0, 0), Direction.SOUTH);
 
-        rover.moveForward();
+        rover.moveTo(rover.getNextForwardPosition());
 
         assertEquals("0,-1,south", rover.report());
     }
 
     @Test
-    void shouldMoveForwardEast() {
+    void shouldMoveForwardWhenFacingEast() {
 
         Rover rover = new Rover(new Position(0, 0), Direction.EAST);
 
-        rover.moveForward();
+        rover.moveTo(rover.getNextForwardPosition());
 
         assertEquals("1,0,east", rover.report());
     }
 
     @Test
-    void shouldMoveForwardWest() {
+    void shouldMoveForwardWhenFacingWest() {
 
         Rover rover = new Rover(new Position(0, 0), Direction.WEST);
 
-        rover.moveForward();
+        rover.moveTo(rover.getNextForwardPosition());
 
         assertEquals("-1,0,west", rover.report());
     }
@@ -53,41 +53,41 @@ public class RoverTest {
     // ---------------- BACKWARD MOVEMENT ----------------
 
     @Test
-    void shouldMoveBackwardNorth() {
+    void shouldMoveBackwardWhenFacingNorth() {
 
         Rover rover = new Rover(new Position(0, 0), Direction.NORTH);
 
-        rover.moveBackward();
+        rover.moveTo(rover.getNextBackwardPosition());
 
         assertEquals("0,-1,north", rover.report());
     }
 
     @Test
-    void shouldMoveBackwardSouth() {
+    void shouldMoveBackwardWhenFacingSouth() {
 
         Rover rover = new Rover(new Position(0, 0), Direction.SOUTH);
 
-        rover.moveBackward();
+        rover.moveTo(rover.getNextBackwardPosition());
 
         assertEquals("0,1,south", rover.report());
     }
 
     @Test
-    void shouldMoveBackwardEast() {
+    void shouldMoveBackwardWhenFacingEast() {
 
         Rover rover = new Rover(new Position(0, 0), Direction.EAST);
 
-        rover.moveBackward();
+        rover.moveTo(rover.getNextBackwardPosition());
 
         assertEquals("-1,0,east", rover.report());
     }
 
     @Test
-    void shouldMoveBackwardWest() {
+    void shouldMoveBackwardWhenFacingWest() {
 
         Rover rover = new Rover(new Position(0, 0), Direction.WEST);
 
-        rover.moveBackward();
+        rover.moveTo(rover.getNextBackwardPosition());
 
         assertEquals("1,0,west", rover.report());
     }
