@@ -7,6 +7,8 @@ import domain.planet.Planet;
 import domain.rover.Rover;
 import domain.rover.model.Position;
 
+import java.util.Optional;
+
 public class Mission {
 
     private final Rover rover;
@@ -17,27 +19,29 @@ public class Mission {
         this.planet = planet;
     }
 
-    public void execute(String input) {
+    public Optional<String> execute(String input) {
         Command command = CommandFactory.create(input);
 
         if (command instanceof MovementCommand movementCommand) {
-            attemptMove(movementCommand.getNextPosition(rover));
-        } else {
-            command.execute(rover);
+            return attemptMove(movementCommand.getNextPosition(rover));
         }
+
+        command.execute(rover);
+        return Optional.empty();
     }
 
     public String report() {
         return rover.report();
     }
 
-    private void attemptMove(Position intendedPosition) {
+    private Optional<String> attemptMove(Position intendedPosition) {
         Position destination = planet.wrapAround(intendedPosition);
 
         if (planet.hasObstacleAt(destination)) {
-            System.out.println("Obstacle detected at " + destination.x() + "," + destination.y());
-        } else {
-            rover.moveTo(destination);
+            return Optional.of("Obstacle detected at " + destination.x() + "," + destination.y());
         }
+
+        rover.moveTo(destination);
+        return Optional.empty();
     }
 }

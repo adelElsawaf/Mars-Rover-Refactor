@@ -35,14 +35,6 @@ public class Rover {
         direction = direction.right();
     }
 
-    public Position getPosition() {
-        return position;
-    }
-
-    public Direction getDirection() {
-        return direction;
-    }
-
     public String report() {
         return position.x() + "," + position.y() + "," + direction.name().toLowerCase();
     }

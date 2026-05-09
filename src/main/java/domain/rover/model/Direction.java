@@ -8,8 +8,6 @@ public enum Direction {
     WEST(-1, 0);
 
     private final int xComponent;
-
-
     private final int yComponent;
 
     Direction(int xComponent, int yComponent) {
@@ -17,13 +15,22 @@ public enum Direction {
         this.yComponent = yComponent;
     }
 
-
     public int moveX(int stepSize) {
         return xComponent * stepSize;
     }
 
     public int moveY(int stepSize) {
         return yComponent * stepSize;
+    }
+
+    public static Direction from(String value) {
+        return switch (value.toLowerCase()) {
+            case "n" -> NORTH;
+            case "e" -> EAST;
+            case "s" -> SOUTH;
+            case "w" -> WEST;
+            default -> throw new IllegalArgumentException("Invalid direction: " + value);
+        };
     }
 
     public Direction left() {

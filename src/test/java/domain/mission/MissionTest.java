@@ -9,7 +9,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MissionTest {
 
@@ -127,36 +130,39 @@ public class MissionTest {
     // ---------------- OBSTACLES ----------------
 
     @Test
-    void shouldNotMoveWhenObstacleAhead() {
+    void shouldNotMoveAndReportObstacleWhenObstacleAhead() {
 
         Planet mars = new Mars(5, 5, Set.of(new Position(0, 1)));
         Mission mission = missionOn(mars, 0, 0, Direction.NORTH);
 
-        mission.execute("f");
+        Optional<String> result = mission.execute("f");
 
         assertEquals("0,0,north", mission.report());
+        assertEquals(Optional.of("Obstacle detected at 0,1"), result);
     }
 
     @Test
-    void shouldNotMoveWhenObstacleAtWrappedPosition() {
+    void shouldNotMoveAndReportObstacleWhenObstacleAtWrappedPosition() {
 
         Planet mars = new Mars(5, 5, Set.of(new Position(0, 0)));
         Mission mission = missionOn(mars, 0, 4, Direction.NORTH);
 
-        mission.execute("f");
+        Optional<String> result = mission.execute("f");
 
         assertEquals("0,4,north", mission.report());
+        assertEquals(Optional.of("Obstacle detected at 0,0"), result);
     }
 
     @Test
-    void shouldMoveWhenNoObstacleAhead() {
+    void shouldMoveAndReturnEmptyWhenNoObstacleAhead() {
 
         Planet mars = new Mars(5, 5, Set.of(new Position(2, 2)));
         Mission mission = missionOn(mars, 0, 0, Direction.NORTH);
 
-        mission.execute("f");
+        Optional<String> result = mission.execute("f");
 
         assertEquals("0,1,north", mission.report());
+        assertTrue(result.isEmpty());
     }
 
     // ---------------- HELPER ----------------

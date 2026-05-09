@@ -1,4 +1,4 @@
-import domain.mission.Mission;
+import application.RoverApplicationService;
 import domain.planet.Mars;
 import domain.rover.Rover;
 import domain.rover.model.Direction;
@@ -20,71 +20,76 @@ public class MarsRover {
         System.out.println("Insert vertical map size:");
         int height = reader.nextInt();
 
-        System.out.println("Insert horizontal initial rover position:");
-        int x = reader.nextInt();
+        MarsRoverInputValidator validator = new MarsRoverInputValidator(width, height);
 
-        System.out.println("Insert vertical initial rover position:");
-        int y = reader.nextInt();
+        Position roverPosition = readValidRoverPosition(reader, validator);
+        Direction direction = readValidDirection(reader);
+        Set<Position> obstacles = readObstacles(reader, validator, roverPosition);
 
-        if (x < 0 || x >= width || y < 0 || y >= height) {
-            System.out.println("Invalid rover position: (" + x + "," + y + ") is outside the map bounds.");
-            return;
-        }
-
-        System.out.println("Insert initial rover direction (n/e/s/w):");
-        String dir = reader.next();
-
-        System.out.println("Insert number of obstacles:");
-        int obstacleCount = reader.nextInt();
-
-        Set<Position> obstacles = new HashSet<>();
-
-        for (int i = 0; i < obstacleCount; i++) {
-            System.out.println("Insert obstacle " + (i + 1) + " horizontal position:");
-            int obstacleX = reader.nextInt();
-
-            System.out.println("Insert obstacle " + (i + 1) + " vertical position:");
-            int obstacleY = reader.nextInt();
-
-            if (obstacleX < 0 || obstacleX >= width || obstacleY < 0 || obstacleY >= height) {
-                System.out.println("Invalid obstacle position: (" + obstacleX + "," + obstacleY + ") is outside the map bounds. Skipping.");
-                continue;
-            }
-
-            if (obstacleX == x && obstacleY == y) {
-                System.out.println("Cannot place obstacle at rover's starting position. Skipping.");
-                continue;
-            }
-
-            obstacles.add(new Position(obstacleX, obstacleY));
-        }
-
-        Mission mission = new Mission(
-                new Rover(new Position(x, y), parseDirection(dir)),
+        RoverApplicationService service = new RoverApplicationService(
+                new Rover(roverPosition, direction),
                 new Mars(width, height, obstacles)
         );
 
+        runCommandLoop(reader, service);
+    }
+
+    private static Position readValidRoverPosition(Scanner reader, MarsRoverInputValidator validator) {
         while (true) {
-
-            System.out.println("Insert command (f,b,l,r):");
-            String command = reader.next();
-
-            mission.execute(command);
-
-            System.out.println(mission.report());
+            System.out.println("Insert horizontal initial rover position:");
+            int x = reader.nextInt();
+            System.out.println("Insert vertical initial rover position:");
+            int y = reader.nextInt();
+            try {
+                validator.validateRoverPosition(x, y);
+                return new Position(x, y);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid rover position, please re-insert.");
+            }
         }
     }
 
-    // ---------------- Direction parser ----------------
+    private static Direction readValidDirection(Scanner reader) {
+        while (true) {
+            System.out.println("Insert initial rover direction (n/e/s/w):");
+            try {
+                return Direction.from(reader.next());
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid direction, please re-insert.");
+            }
+        }
+    }
 
-    private static Direction parseDirection(String input) {
+    private static Set<Position> readObstacles(Scanner reader, MarsRoverInputValidator validator, Position roverPosition) {
+        System.out.println("Insert number of obstacles:");
+        int count = reader.nextInt();
+        Set<Position> obstacles = new HashSet<>();
 
-        return switch (input.toLowerCase()) {
-            case "n" -> Direction.NORTH;
-            case "e" -> Direction.EAST;
-            case "s" -> Direction.SOUTH;
-            case "w" -> Direction.WEST;
-            default -> throw new IllegalArgumentException("Invalid direction: " + input);
-        };
+        for (int i = 0; i < count; i++) {
+            System.out.println("Insert obstacle " + (i + 1) + " horizontal position:");
+            int x = reader.nextInt();
+            System.out.println("Insert obstacle " + (i + 1) + " vertical position:");
+            int y = reader.nextInt();
+            try {
+                validator.validateObstaclePosition(x, y, roverPosition.x(), roverPosition.y());
+                obstacles.add(new Position(x, y));
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage() + " Skipping.");
+            }
+        }
+
+        return obstacles;
+    }
+
+    private static void runCommandLoop(Scanner reader, RoverApplicationService service) {
+        while (true) {
+            System.out.println("Insert command (f,b,l,r):");
+            try {
+                service.executeCommand(reader.next());
+                System.out.println(service.report());
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 }
