@@ -5,6 +5,7 @@ import domain.rover.model.Direction;
 import domain.rover.model.Position;
 
 import java.util.HashSet;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -14,11 +15,8 @@ public class MarsRover {
 
         Scanner reader = new Scanner(System.in);
 
-        System.out.println("Insert horizontal map size:");
-        int width = reader.nextInt();
-
-        System.out.println("Insert vertical map size:");
-        int height = reader.nextInt();
+        int width = readInt(reader, "Insert horizontal map size:");
+        int height = readInt(reader, "Insert vertical map size:");
 
         MarsRoverInputValidator validator = new MarsRoverInputValidator(width, height);
 
@@ -36,10 +34,8 @@ public class MarsRover {
 
     private static Position readValidRoverPosition(Scanner reader, MarsRoverInputValidator validator) {
         while (true) {
-            System.out.println("Insert horizontal initial rover position:");
-            int x = reader.nextInt();
-            System.out.println("Insert vertical initial rover position:");
-            int y = reader.nextInt();
+            int x = readInt(reader, "Insert horizontal initial rover position:");
+            int y = readInt(reader, "Insert vertical initial rover position:");
             try {
                 validator.validateRoverPosition(x, y);
                 return new Position(x, y);
@@ -61,15 +57,12 @@ public class MarsRover {
     }
 
     private static Set<Position> readObstacles(Scanner reader, MarsRoverInputValidator validator, Position roverPosition) {
-        System.out.println("Insert number of obstacles:");
-        int count = reader.nextInt();
+        int count = readInt(reader, "Insert number of obstacles:");
         Set<Position> obstacles = new HashSet<>();
 
         for (int i = 0; i < count; i++) {
-            System.out.println("Insert obstacle " + (i + 1) + " horizontal position:");
-            int x = reader.nextInt();
-            System.out.println("Insert obstacle " + (i + 1) + " vertical position:");
-            int y = reader.nextInt();
+            int x = readInt(reader, "Insert obstacle " + (i + 1) + " horizontal position:");
+            int y = readInt(reader, "Insert obstacle " + (i + 1) + " vertical position:");
             try {
                 validator.validateObstaclePosition(x, y, roverPosition.x(), roverPosition.y());
                 obstacles.add(new Position(x, y));
@@ -89,6 +82,18 @@ public class MarsRover {
                 System.out.println(service.report());
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    private static int readInt(Scanner reader, String prompt) {
+        while (true) {
+            System.out.println(prompt);
+            try {
+                return reader.nextInt();
+            } catch (InputMismatchException e) {
+                reader.next();
+                System.out.println("Please enter a valid number.");
             }
         }
     }
