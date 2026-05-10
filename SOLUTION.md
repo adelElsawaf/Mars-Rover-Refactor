@@ -167,12 +167,13 @@ instance reuses the map context without repeating it on every call.
 ## Test coverage
 
 
-| Test class      | Covers                                                                                                                                                          |
-| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `RoverTest`     | forward and backward movement in all four directions; left and right rotation                                                                                   |
-| `MissionTest`   | wrapping all four edges; backward movement and wrapping; obstacle blocking forward and backward; obstacle at wrapped position; rotation; multi-command sequence |
-| `MarsTest`      | wrap arithmetic for all four edges; no-wrap case; obstacle present, absent, and no obstacles                                                                    |
-| `DirectionTest` | `Direction.from` for all four inputs; case-insensitivity; invalid input exception                                                                               |
+| Test class                  | Covers                                                                                                                                                          |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `RoverTest`                 | forward and backward movement in all four directions; left and right rotation                                                                                   |
+| `MissionTest`               | wrapping all four edges; backward movement and wrapping; obstacle blocking forward and backward; obstacle at wrapped position; rotation; multi-command sequence |
+| `MarsTest`                  | wrap arithmetic for all four edges; no-wrap case; obstacle present, absent, and no obstacles                                                                    |
+| `DirectionTest`             | `Direction.from` for all four inputs; case-insensitivity; invalid input exception                                                                               |
+| `MarsRoverScenarioTest`     | 63 cross-cutting scenarios: wrapping all edges and corners, forward and backward wrapping, full laps, non-square and degenerate grids, obstacle blocking in all directions, obstacle at wrapped positions, surrounded rover, multi-step sequences with obstacles, invalid commands |
 
 
 All tests run without starting the main application (`mvn test`).
